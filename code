@@ -1,0 +1,133 @@
+#include <iostream>
+#include <algorithm>
+#include <cstdlib>
+#include <iomanip>
+
+using namespace std;
+
+const int std_max = 100;  // Maximum number of students
+const int max_c = 10;    // Maximum number of courses
+
+char cal_grade(double percentage) 
+{
+    if (percentage >= 85) return 'A';
+    else if (percentage >= 70) return 'B';
+    else if (percentage >= 55) return 'C';
+    else if (percentage >= 40) return 'D';
+    else return 'F';
+}
+
+void clc() 
+{
+    system("clear || cls");
+}
+
+
+void display() 
+{
+    clc();
+    cout << "\t---Welcome to School Grade Calculator---\n";
+}
+
+int main() 
+{
+    int num = 0;  // Number of students
+
+    display();
+    cout << "\nEnter number of students: ";
+    cin >> num;
+
+    // Ensure num does not exceed maximum allowed students
+    num = min(std_max, num);
+
+    // Arrays to hold data
+    string name[std_max];
+    int numc[std_max] = {}; 
+    string course[max_c][std_max];
+    double t_marks[max_c][std_max] = {};
+    double obt[max_c][std_max] = {};
+    double t_obt[std_max] = {};
+    double t_possible[std_max] = {};
+    double percentage[std_max] = {};
+    char grade[std_max] {};
+
+    for (int i = 0; i < num; ++i) 
+    {
+        display();
+        cout << "\nName of Student " << i + 1 << ": ";
+        cin >> name[i];
+
+        cout << "\nNumber of courses taken: ";
+        cin >> numc[i];
+
+        // Ensure numc does not exceed maximum allowed courses
+        numc[i] = min(numc[i], max_c);
+
+        // Process each course for the student
+        for (int j = 0; j < numc[i]; ++j) 
+        {
+            display();
+            cout << "\nName of course " << j + 1 << " taken: ";
+            cin >> course[j][i];
+
+            cout << "\nTotal marks for " << course[j][i] << ": ";
+            cin >> t_marks[j][i];
+
+            cout << "\nObtained marks in " << course[j][i] << ": ";
+            cin >> obt[j][i];
+
+            // Accumulate total marks and obtained marks
+            t_possible[i] += t_marks[j][i];
+            t_obt[i] += obt[j][i];
+
+          }
+
+        // Calculate percentage and grade for the student
+        percentage[i] = (t_obt[i] / t_possible[i]) * 100;
+        grade[i] = cal_grade(percentage[i]);
+    }
+
+    // Display the grade report
+   
+     cout << "\n\t\t*** Grade Report ***\n\n";
+
+   
+    cout << "+----------------------+------------------+----------+\n";
+    cout << "|      NAME     | Courses | PERCENTAGE  |   GRADE    |\n";
+    cout << "+----------------------+----------------+----------+\n";
+    for (int k = 0; k < num; ++k) 
+    {
+        // Manually format the output for percentage
+        cout << name[k] << "\t        " 
+             << numc[k] << "\t          "
+             << (static_cast<int>(percentage[k] * 100 + 0.5) / 100.0) << "\t        "
+             << grade[k] << "\n";
+
+        for (int m = 0; m < numc[k]; ++m) 
+        {
+            cout << "\n\n              " << course[m][k] << ": " 
+                 << obt[m][k] << "/" << t_marks[m][k] << "\n";
+        }
+
+        cout << '\n';
+    }
+
+    // Calculate and display highest and lowest percentages
+    double max_per = percentage[0];
+    double min_per = percentage[0];
+
+    for (int k = 1; k < num; ++k) 
+    {
+        if (max_per < percentage[k])
+            max_per = percentage[k];
+
+        if (min_per > percentage[k])
+            min_per = percentage[k];
+    }
+
+    // Manually format the output for max and min percentages
+    cout << "\n\nHighest Percentage: " << (static_cast<int>(max_per * 100 + 0.5) / 100.0) << "%\n";
+    cout << "Lowest Percentage: " << (static_cast<int>(min_per * 100 + 0.5) / 100.0) << "%\n";
+
+    return 0;
+}
